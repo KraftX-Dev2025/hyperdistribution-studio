@@ -77,7 +77,7 @@ export type Segment =
 
 export type EditSpec = {
   title: string;
-  aspect: "9:16" | "1:1" | "16:9";
+  aspect: "9:16" | "1:1" | "16:9" | "4:5";
   fps: number;
   accent: string;
   music?: string; // path inside the media folder

@@ -5,16 +5,16 @@ A free, open-source content studio. Connect a folder of your photos, clips and m
 - **Brand brains** built from links. Paste a website, about page or profiles; Claude reads them and writes the brand's voice, audience, pillars, hooks, do's and don'ts.
 - **Multi-channel planning** across 50+ channels (Instagram, TikTok, YouTube, LinkedIn, X, Reddit, Product Hunt, newsletters, press and more), with weekly targets per channel and a fire grid that shows where you're behind.
 - **Ideas and dumps.** Throw in raw thoughts and links, turn them into ideas, and **blast** one idea across every brand and channel at once, each version in that brand's voice and native to the platform.
-- **Scripts and video edits.** Claude writes the script and cuts it from your own media folder. Tweak any segment, preview it live with [Remotion](https://www.remotion.dev), and export an MP4 right in the browser.
+- **Video edits.** Write the script in a post, pick clips from your media folder (or let Claude pick them), and send it to [Remotion](https://www.remotion.dev). The MP4 renders right in your browser and shows up on the post.
 
 Your data stays in your browser. Media files are read locally and never uploaded.
 
 ## Use it
 
-1. Open the app and go to **Settings**. Paste a Claude API key from [platform.claude.com](https://platform.claude.com/settings/keys). It is stored only in your browser and sent with each AI request; the server never saves it.
-2. Go to **Media folder** and connect the folder where your media lives. Chrome, Edge and Arc remember it between visits.
+1. Open the app and press **⚙ Settings**. Paste a Claude API key from [platform.claude.com](https://platform.claude.com/settings/keys). It is stored only in your browser and sent with each AI request; the server never saves it.
+2. Press **Media** and connect the folder where your media lives. Chrome, Edge and Arc remember it between visits.
 3. Add a **brand** with its links and channels, then press **Build brain**.
-4. Dump ideas, blast them, and script videos.
+4. Dump ideas, plan the week, blast one idea everywhere, and send posts to Remotion.
 
 ## Run it yourself
 
@@ -29,29 +29,22 @@ npm run dev        # app + API on http://localhost:5173
 
 Import the repo at [vercel.com/new](https://vercel.com/new). No settings are needed: Vercel detects Vite, serves the app, and runs `api/ai.ts` as a function. Optional environment variables are in [`.env.example`](.env.example), for example to pay for everyone's usage with your own key.
 
-### Render with the Remotion CLI
+### Work on the video template
 
-The browser export is fine for short edits. For long or high-quality renders, press **Download edit** in the studio and run:
-
-```bash
-npx remotion render remotion/index.ts Edit out.mp4 --props=./edit.json --public-dir="/path/to/your/media"
-```
-
-`npm run studio` opens Remotion Studio on the same composition.
+`npm run studio` opens Remotion Studio on the edit template in `src/video/Edit.tsx`. Each finished render stores the edit it used (`spec`), so you can also render one from the CLI: save `{"spec": ...}` to `edit.json` and run `npx remotion render remotion/index.ts Edit out.mp4 --props=./edit.json --public-dir="/path/to/your/media"`.
 
 ## How it's built
 
-| Piece | Where |
-| --- | --- |
-| UI (Vite, React, TypeScript) | `src/` |
-| Workspace storage (IndexedDB) and backups | `src/lib/store.tsx` |
-| Media folder (File System Access API, with a fallback for other browsers) | `src/lib/media.tsx` |
-| Channel catalogue | `src/lib/platforms.ts` |
-| Video template (Remotion) | `src/video/Edit.tsx`, CLI entry in `remotion/` |
-| Claude calls, prompts and JSON schemas | `api/ai.ts`, `api/_lib/tasks.ts` |
-| Link reader for brand brains | `api/_lib/readLink.ts` (refuses private and local addresses) |
+The board itself is one page (`index.html` plus `public/legacy/app.js`), the same control desk as the original Distribution board: stats strip, fire grid, this week, pipeline and brands, with side panels for brands, posts, blasts, plans, media and the edit queue. It talks to a small set of services that `src/main.ts` provides:
 
-Each AI feature is one entry in `api/_lib/tasks.ts`: a system prompt, a JSON schema and a function that builds the message. Add a task there and call it with `ai("your-task", input, key)` from the UI.
+| Service | Where | What it does |
+| --- | --- | --- |
+| Database | `src/shim/db.ts` | Brands, posts, dumps and renders, stored in this browser's IndexedDB |
+| Claude | `src/shim/services.ts` → `api/ai.ts` | Sends a prompt (and images) with the user's own key; returns JSON |
+| Link reader | `src/shim/services.ts` → `api/read-link.ts` | Reads brand links on the server for brand brains (refuses private addresses) |
+| Uploads | `src/shim/assets.ts`, `public/sw.js` | Logos, images and finished videos, kept in Cache Storage at `/_blob/…` |
+| Media folder | `src/shim/folder.ts` | Your folder of clips, photos and music, read locally and never uploaded |
+| Renderer | `src/shim/render.ts`, `src/video/Edit.tsx` | Turns "Send to Remotion" edits into MP4s in the browser |
 
 ## Licensing
 
