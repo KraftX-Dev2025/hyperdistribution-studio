@@ -14,6 +14,7 @@ export const DIMENSIONS: Record<EditSpec["aspect"], { width: number; height: num
   "9:16": { width: 1080, height: 1920 },
   "1:1": { width: 1080, height: 1080 },
   "16:9": { width: 1920, height: 1080 },
+  "4:5": { width: 1080, height: 1350 },
 };
 
 export const totalFrames = (spec: EditSpec) =>
