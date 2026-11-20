@@ -1,12 +1,11 @@
 import { createStore, get, set } from "idb-keyval";
-import { isNative } from "./platform";
 
 /**
  * Uploaded files (logos, dump images, rendered videos) live at stable
  * /_blob/<id> URLs so they survive reloads.
  *
- * On the web they are kept in Cache Storage and served by the service worker in
- * public/sw.js. The iOS and Android apps have no service worker, so there the
+ * Where a service worker runs, they are kept in Cache Storage and served by
+ * public/sw.js. Where it can't (the iOS app's web view, private modes), the
  * files are kept in IndexedDB and every /_blob/ URL on the page is swapped for
  * an object URL as it appears (and fetch() of one is answered locally).
  */
@@ -75,7 +74,7 @@ function startResolver() {
 }
 
 export async function registerWorker() {
-  if (!isNative && "serviceWorker" in navigator) {
+  if ("serviceWorker" in navigator) {
     try {
       await navigator.serviceWorker.register("/sw.js");
       // ready never settles where workers are blocked (some private modes, policies), so don't wait forever.

@@ -32,7 +32,7 @@ Import the repo at [vercel.com/new](https://vercel.com/new). No settings are nee
 ### Install it as an app
 
 - **Any browser:** open the site and choose *Install* (Chrome, Edge) or *Share → Add to Home Screen* (Safari). It opens full screen and works offline.
-- **iOS and Android apps:** the same web app, bundled with [Capacitor](https://capacitorjs.com). `npm run ios` opens Xcode and `npm run android` opens Android Studio. AI calls go to the hosted site set in `VITE_API_BASE`. Store release steps are in [docs/RELEASE.md](docs/RELEASE.md).
+- **iOS and Android apps:** an [Expo](https://expo.dev) app in [`mobile/`](mobile) that opens the hosted site in a native shell, with native saving and sharing. Builds run in the cloud with EAS, so no Xcode or Android Studio is needed. Store release steps are in [docs/RELEASE.md](docs/RELEASE.md).
 
 On phones there's no folder picker, so **Media** asks you to pick photos, clips and music from your library instead, and finished videos get a **Save or share** button.
 

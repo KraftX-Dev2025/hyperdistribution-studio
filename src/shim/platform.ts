@@ -1,15 +1,18 @@
-import { Capacitor } from "@capacitor/core";
-
 /**
- * Where HyperMixer is running. On the web the page and its /api functions share
- * an origin. Inside the iOS and Android apps the page is bundled into the app,
- * so API calls go to the hosted site instead (VITE_API_BASE, set at build time).
+ * Where HyperMixer is running: a browser tab, an installed web app, or the
+ * iOS / Android app (an Expo shell around this same site, see mobile/).
  */
-export const isNative = Capacitor.isNativePlatform();
-export const platform = Capacitor.getPlatform() as "web" | "ios" | "android";
+type AppBridge = { platform: "ios" | "android" };
+const app = (window as unknown as { __hypermixerApp?: AppBridge }).__hypermixerApp;
+const rn = (window as unknown as { ReactNativeWebView?: { postMessage(s: string): void } }).ReactNativeWebView;
+
+export const isNative = !!(app && rn);
+export const platform: "web" | "ios" | "android" = app?.platform ?? "web";
 export const isMobile = isNative || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-const DEFAULT_API = "https://hyperdistribution-studio.vercel.app";
-const base = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, "") || (isNative ? DEFAULT_API : "");
+/** Sends a message to the native shell. */
+export const postToApp = (m: unknown) => rn?.postMessage(JSON.stringify(m));
 
+/** API calls are same-origin everywhere: the apps load the hosted site. VITE_API_BASE can point a self-hosted build elsewhere. */
+const base = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, "") ?? "";
 export const apiUrl = (path: string) => base + path;

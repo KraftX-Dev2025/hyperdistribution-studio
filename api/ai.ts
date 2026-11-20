@@ -1,5 +1,4 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { preflight, withCors } from "./_lib/cors.js";
 
 export const config = { maxDuration: 300 };
 
@@ -21,9 +20,6 @@ function keyFor(req: Request) {
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
 
-export const OPTIONS = preflight;
-export const POST = (req: Request) => withCors(req, handle);
-
 /** Pulls the JSON value out of a reply, tolerating stray prose or code fences. */
 function parseJson(text: string): unknown {
   const t = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "");
@@ -39,7 +35,7 @@ function parseJson(text: string): unknown {
 }
 
 /** One generic endpoint: the page sends a prompt (plus optional images) and gets JSON back. */
-async function handle(req: Request): Promise<Response> {
+export async function POST(req: Request) {
   const apiKey = keyFor(req);
   if (!apiKey) return json({ error: "Add your Claude API key in Settings.", code: "no_key" }, 401);
 
