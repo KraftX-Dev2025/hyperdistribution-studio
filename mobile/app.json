@@ -36,6 +36,8 @@
       },
       "permissions": [
         "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ],
       "predictiveBackGestureEnabled": false
@@ -54,6 +56,16 @@
         }
       ]
     ],
-    "owner": "kraftxworks"
+    "owner": "kraftxworks",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a4465f86-2a54-455c-b3ea-e1bcedb51bfd"
+    },
+    "platforms": [
+      "ios",
+      "android"
+    ]
   }
 }
