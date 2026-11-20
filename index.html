@@ -3,9 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Free, open-source content studio: brand brains, multi-channel planning, scripts and Remotion video edits from your own media folder.">
+<meta name="description" content="HyperMixer: a free, open-source content studio. Brand brains, multi-channel planning, scripts and video edits from your own media.">
+<meta name="theme-color" content="#F4F5FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1017" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HyperMixer">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<title>HyperDistribution Studio</title>
+<title>HyperMixer</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -396,14 +404,29 @@ table.fire{border-collapse:separate;border-spacing:0;width:100%;min-width:640px;
 .pv-repo .rp-f{display:flex;gap:14px;padding:8px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
 .pv-mail .mh{display:flex;align-items:center;gap:8px}
 </style>
-<style>/* page chrome the artifact host used to provide */ html,body{margin:0}</style>
+<style>/* page chrome the artifact host used to provide */ html,body{margin:0}
+/* Installed app and phones: clear the status bar and home indicator, no rubber-band zoom on inputs. */
+.wrap{padding-top:max(28px,calc(env(safe-area-inset-top,0px) + 12px));padding-bottom:max(64px,calc(env(safe-area-inset-bottom,0px) + 24px))}
+.panel{padding-top:max(22px,calc(env(safe-area-inset-top,0px) + 8px));padding-bottom:max(32px,calc(env(safe-area-inset-bottom,0px) + 16px))}
+html{-webkit-text-size-adjust:100%}
+@media (max-width:640px){
+  input,select,textarea{font-size:16px}
+  /* Phones: header buttons sit in one swipeable row instead of four wrapped rows. */
+  header.top{align-items:stretch}
+  header.top>.actions{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px;scroll-padding-inline:16px;-webkit-overflow-scrolling:touch}
+  header.top>.actions::-webkit-scrollbar{display:none}
+  header.top>.actions>.btn{flex:none;white-space:nowrap}
+  header.top>.actions>.btn.fire{order:-1}
+  h1{font-size:28px}
+}
+</style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div class="title">
       <span class="eyebrow">Every brand · every channel</span>
-      <h1>HyperDistribution Studio</h1>
+      <h1>HyperMixer</h1>
       <span class="live" id="live"><i></i><span id="liveText">Loading…</span></span>
     </div>
     <div class="actions">

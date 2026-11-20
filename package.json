@@ -1,5 +1,5 @@
 {
-  "name": "hyperdistribution-studio",
+  "name": "hypermixer",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -10,10 +10,20 @@
     "preview": "vite preview",
     "typecheck": "tsc -b && tsc -p api/tsconfig.json",
     "studio": "remotion studio remotion/index.ts",
-    "render": "remotion render remotion/index.ts Edit"
+    "render": "remotion render remotion/index.ts Edit",
+    "build:app": "VITE_API_BASE=${VITE_API_BASE:-https://hyperdistribution-studio.vercel.app} npm run build && cap sync",
+    "ios": "npm run build:app && cap open ios",
+    "android": "npm run build:app && cap open android",
+    "icons": "capacitor-assets generate --ios --android --iconBackgroundColor \"#2A33C9\" --iconBackgroundColorDark \"#2A33C9\" --splashBackgroundColor \"#F4F5FA\" --splashBackgroundColorDark \"#0E1017\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.10.0",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/share": "^8.0.3",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4",
     "@remotion/cli": "4.0.545",
     "@remotion/media": "4.0.545",
     "@remotion/web-renderer": "4.0.545",
@@ -24,6 +34,10 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/ios": "^8.6.2",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -34,7 +48,7 @@
     "vite": "^8.3.6"
   },
   "license": "MIT",
-  "description": "Free, open-source content studio: brand brains, multi-channel planning, scripts and Remotion video edits from your own media folder.",
+  "description": "HyperMixer: free, open-source content studio. Brand brains, multi-channel planning, scripts and Remotion video edits from your own media, on the web, iOS and Android.",
   "engines": {
     "node": ">=20"
   }

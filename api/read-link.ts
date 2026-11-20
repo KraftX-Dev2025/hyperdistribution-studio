@@ -1,12 +1,16 @@
 import { readLink } from "./_lib/readLink.js";
+import { preflight, withCors } from "./_lib/cors.js";
 
 export const config = { maxDuration: 30 };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
 
+export const OPTIONS = preflight;
+export const POST = (req: Request) => withCors(req, handle);
+
 /** Reads a public web page as text, so brand brains can learn from a brand's links. */
-export async function POST(req: Request) {
+async function handle(req: Request): Promise<Response> {
   let url = "";
   try {
     url = String((await req.json()).url || "");

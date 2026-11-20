@@ -1,4 +1,5 @@
 /** Claude, link reading and settings for the ported board. */
+import { apiUrl } from "./platform";
 
 const KEY = "hds:anthropic-key";
 const LICENSE = "hds:remotion-license";
@@ -39,7 +40,7 @@ export const sample = {
       throw err("no_key", "Add your Claude API key in Settings.");
     }
     const images = (await Promise.all((opts.images ?? []).slice(0, 4).map(toBase64))).filter(Boolean);
-    const res = await fetch("/api/ai", {
+    const res = await fetch(apiUrl("/api/ai"), {
       method: "POST",
       headers: { "content-type": "application/json", "x-anthropic-key": key },
       body: JSON.stringify({ prompt, images }),
@@ -60,7 +61,7 @@ export const mcp = {
   },
   async callTool(_server: string, name: string, input: { url?: string; tabId?: string }) {
     if (name === "navigate") {
-      const res = await fetch("/api/read-link", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: input.url }) });
+      const res = await fetch(apiUrl("/api/read-link"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: input.url }) });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.text) throw err("read_failed", data.error || "Couldn't read that page");
       const tabId = "t" + pages.size;
@@ -86,11 +87,11 @@ export function openSettings(note = "") {
     ${note ? `<div class="banner">${esc(note)}</div>` : ""}
     <div class="form">
       <div class="field full"><label for="hds_key">Claude API key</label><input id="hds_key" type="password" autocomplete="off" placeholder="sk-ant-..." value="${esc(settingsStore.apiKey())}">
-        <span class="muted" style="font-size:12px">Powers brand brains, plans, blasts and clip picking. Get one at <a href="https://platform.claude.com/settings/keys" target="_blank" rel="noopener">platform.claude.com</a>. It stays in this browser and is sent only with each request to this app's server, which passes it to Anthropic and never stores it.</span></div>
+        <span class="muted" style="font-size:12px">Powers brand brains, plans, blasts and clip picking. Get one at <a href="https://platform.claude.com/settings/keys" target="_blank" rel="noopener">platform.claude.com</a>. It stays on this device and is sent only with each request to HyperMixer's server, which passes it to Anthropic and never stores it.</span></div>
       <div class="field full"><label for="hds_lic">Remotion license</label><input id="hds_lic" placeholder="free-license" value="${esc(settingsStore.license())}">
         <span class="muted" style="font-size:12px">Videos render in your browser with <a href="https://www.remotion.dev" target="_blank" rel="noopener">Remotion</a>. It's free for individuals and companies of up to 3 people: type <code>free-license</code>. Larger companies need a <a href="https://www.remotion.dev/license" target="_blank" rel="noopener">company license</a> key.</span></div>
     </div>
-    <div class="field"><span class="lbl">Your data</span><span class="muted" style="font-size:12px">Brands, posts, dumps and renders are saved in this browser only. Export a backup to move them to another computer.</span>
+    <div class="field"><span class="lbl">Your data</span><span class="muted" style="font-size:12px">Brands, posts, dumps and renders are saved on this device only. Export a backup to move them to another device.</span>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn sm" id="hds_export">Export backup</button><label class="btn sm">Import backup<input type="file" id="hds_import" accept="application/json" hidden></label></div></div>
     <div class="panel-foot"><span></span><div class="actions"><button class="btn" data-close>Cancel</button><button class="btn primary" id="hds_save">Save</button></div></div>`);
   document.getElementById("hds_save")!.onclick = () => {

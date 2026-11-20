@@ -1,6 +1,6 @@
-# HyperDistribution Studio
+# HyperMixer
 
-A free, open-source content studio. Connect a folder of your photos, clips and music, describe your brands, and it handles the rest end to end:
+A free, open-source content studio for the web, iPhone, iPad and Android. Connect a folder of your photos, clips and music, describe your brands, and it handles the rest end to end:
 
 - **Brand brains** built from links. Paste a website, about page or profiles; Claude reads them and writes the brand's voice, audience, pillars, hooks, do's and don'ts.
 - **Multi-channel planning** across 50+ channels (Instagram, TikTok, YouTube, LinkedIn, X, Reddit, Product Hunt, newsletters, press and more), with weekly targets per channel and a fire grid that shows where you're behind.
@@ -19,8 +19,8 @@ Your data stays in your browser. Media files are read locally and never uploaded
 ## Run it yourself
 
 ```bash
-git clone https://github.com/<you>/hyperdistribution-studio
-cd hyperdistribution-studio
+git clone https://github.com/<you>/hypermixer
+cd hypermixer
 npm install
 npm run dev        # app + API on http://localhost:5173
 ```
@@ -28,6 +28,13 @@ npm run dev        # app + API on http://localhost:5173
 ### Deploy to Vercel
 
 Import the repo at [vercel.com/new](https://vercel.com/new). No settings are needed: Vercel detects Vite, serves the app, and runs `api/ai.ts` as a function. Optional environment variables are in [`.env.example`](.env.example), for example to pay for everyone's usage with your own key.
+
+### Install it as an app
+
+- **Any browser:** open the site and choose *Install* (Chrome, Edge) or *Share → Add to Home Screen* (Safari). It opens full screen and works offline.
+- **iOS and Android apps:** the same web app, bundled with [Capacitor](https://capacitorjs.com). `npm run ios` opens Xcode and `npm run android` opens Android Studio. AI calls go to the hosted site set in `VITE_API_BASE`. Store release steps are in [docs/RELEASE.md](docs/RELEASE.md).
+
+On phones there's no folder picker, so **Media** asks you to pick photos, clips and music from your library instead, and finished videos get a **Save or share** button.
 
 ### Work on the video template
 
