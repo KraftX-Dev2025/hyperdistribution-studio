@@ -10,7 +10,14 @@ import { startRenderer } from "./shim/render";
 import { saveFile, setupNative } from "./shim/native";
 
 
-const services: Record<string, unknown> = { db, sample, assets, mcp };
+// Saving files: a download on the web, the share sheet in the apps.
+const downloads = {
+  async save({ filename, data }: { filename: string; data: Blob | ArrayBuffer | Uint8Array | string }) {
+    const blob = data instanceof Blob ? data : new Blob([data as BlobPart]);
+    await saveFile(blob, filename);
+  },
+};
+const services: Record<string, unknown> = { db, sample, assets, mcp, downloads };
 (window as unknown as { claude: unknown }).claude = { use: async (name: string) => services[name] ?? null };
 (window as unknown as { __hds: unknown }).__hds = { folderNote: () => folder.note(), settings: () => openSettings() };
 
@@ -34,7 +41,7 @@ window.addEventListener("hds:folder", () => {
 });
 
 // Backups.
-const COLS = ["brands", "posts", "dumps", "renders", "subs", "styles"];
+const COLS = ["brands", "posts", "dumps", "renders", "subs", "styles", "analyses", "kits", "setups", "campaigns", "messages"];
 window.addEventListener("hds:export", async () => {
   const out: Record<string, unknown[]> = {};
   for (const c of COLS) out[c] = await docsOf(c);

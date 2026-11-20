@@ -53,13 +53,15 @@ export const sample = {
 
 /** Stands in for the desktop app's browser tool: "navigate" fetches the page on the server, "get_page_text" returns it. */
 const pages = new Map<string, string>();
+const BROWSER = "host:claude_browser";
 export const mcp = {
   async describeTool(_server: string, name: string) {
     return name === "get_page_text"
       ? { inputSchema: { required: ["tabId"], properties: { tabId: { type: "string" } } } }
       : { inputSchema: { required: ["url"], properties: { url: { type: "string" } } } };
   },
-  async callTool(_server: string, name: string, input: { url?: string; tabId?: string }) {
+  async callTool(server: string, name: string, input: { url?: string; tabId?: string }) {
+    if (server !== BROWSER) throw err("server_not_connected", `${server} isn't connected. Add it in Settings → Connectors.`);
     if (name === "navigate") {
       const res = await fetch(apiUrl("/api/read-link"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: input.url }) });
       const data = await res.json().catch(() => ({}));
