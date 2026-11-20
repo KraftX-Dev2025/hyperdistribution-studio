@@ -82,6 +82,8 @@ export const db = {
   collection(name: string) {
     return {
       doc: (id?: string) => docRef(name, id || newId()),
+      where: (field: string, op: string, value: unknown) => query(name, [[field, op, value]]),
+      get: () => query(name, []).get(),
       onSnapshot(cb: Listener, _onErr?: (e: unknown) => void) {
         if (!listeners.has(name)) listeners.set(name, new Set());
         listeners.get(name)!.add(cb);
@@ -91,6 +93,35 @@ export const db = {
     };
   },
 };
+
+type Cond = [string, string, unknown];
+const test = (v: unknown, op: string, w: unknown) => {
+  const a = v as number | string, b = w as number | string;
+  switch (op) {
+    case "==": return v === w;
+    case "!=": return v !== w;
+    case ">": return a > b;
+    case ">=": return a >= b;
+    case "<": return a < b;
+    case "<=": return a <= b;
+    case "in": return Array.isArray(w) && w.includes(v);
+    case "array-contains": return Array.isArray(v) && v.includes(w);
+    default: return false;
+  }
+};
+function query(name: string, conds: Cond[]) {
+  return {
+    where: (field: string, op: string, value: unknown) => query(name, [...conds, [field, op, value]]),
+    async get() {
+      await load();
+      const docs = snapshot(name).docs.filter((d) => {
+        const data = d.data() as Record<string, unknown>;
+        return conds.every(([f, op, v]) => test(data?.[f], op, v));
+      });
+      return { docs, empty: !docs.length, size: docs.length };
+    },
+  };
+}
 
 export function setVirtual(name: string, fn: () => Map<string, Data>) {
   virtual.set(name, fn);
