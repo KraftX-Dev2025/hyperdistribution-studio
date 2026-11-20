@@ -1,6 +1,6 @@
 # HyperMixer
 
-A free, open-source content studio for the web, iPhone, iPad and Android. Connect a folder of your photos, clips and music, describe your brands, and it handles the rest end to end:
+The content engine for businesses, free and open source, on the web, iPhone, iPad and Android. Built for founders, marketing teams and agencies running one brand or many. Connect your photos, clips and music, describe your brands, and it handles the rest end to end:
 
 - **Brand brains** built from links. Paste a website, about page or profiles; Claude reads them and writes the brand's voice, audience, pillars, hooks, do's and don'ts.
 - **Multi-channel planning** across 50+ channels (Instagram, TikTok, YouTube, LinkedIn, X, Reddit, Product Hunt, newsletters, press and more), with weekly targets per channel and a fire grid that shows where you're behind.

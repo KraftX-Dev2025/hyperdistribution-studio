@@ -39,7 +39,7 @@ Needs: an Apple Developer Program membership (99 USD a year), a Mac with Xcode 2
 2. App target → Signing & Capabilities → pick your Team. Xcode creates the signing certificate and profile.
 3. In [App Store Connect](https://appstoreconnect.apple.com) → Apps → + → New App: name HyperMixer, bundle id `com.kraftxworks.hypermixer`, SKU `hypermixer`.
 4. Xcode → Product → Archive → Distribute App → App Store Connect → Upload.
-5. In App Store Connect: screenshots (6.9" iPhone and 13" iPad), description, keywords, support URL, privacy policy URL, App Privacy answers (no data collected by the developer; data stays on device), age rating. Then TestFlight, then Submit for Review.
+5. In App Store Connect, using the copy in [STORE-LISTING.md](STORE-LISTING.md): screenshots (6.9" iPhone and 13" iPad), description, keywords, support URL, privacy policy URL, App Privacy answers (no data collected by the developer; data stays on device), age rating. Then TestFlight, then Submit for Review.
 
 Review notes to include: "HyperMixer is a content studio. AI features need the user's own Claude API key, entered in Settings. Media is picked from the photo library and processed on device."
 
@@ -51,7 +51,7 @@ Needs: a Google Play Console account (25 USD once). New personal accounts must r
 2. Build → Generate Signed App Bundle → Android App Bundle → create a new upload keystore. **Back up the keystore and its passwords**; losing them blocks updates.
 3. In [Play Console](https://play.google.com/console) → Create app → HyperMixer. Turn on Play App Signing.
 4. Upload `app-release.aab` to Internal testing first, then Closed testing, then Production.
-5. Store listing: icon (512 px, `public/icons/icon-512.png`), feature graphic 1024×500, phone and tablet screenshots, short and full description, privacy policy URL, Data safety form, content rating.
+5. Store listing (copy in [STORE-LISTING.md](STORE-LISTING.md)): icon (512 px, `public/icons/icon-512.png`), feature graphic 1024×500, phone and tablet screenshots, short and full description, privacy policy URL, Data safety form, content rating.
 
 ## Before the first submission
 

@@ -1,7 +1,7 @@
 {
   "name": "HyperMixer",
   "short_name": "HyperMixer",
-  "description": "Plan, write and edit content for every brand and channel, from your own media.",
+  "description": "The content engine for businesses: plan, write and edit on-brand posts and videos for every brand and channel.",
   "id": "/",
   "start_url": "/",
   "scope": "/",
@@ -10,9 +10,9 @@
   "background_color": "#F4F5FA",
   "theme_color": "#3846F0",
   "categories": [
+    "business",
     "productivity",
-    "photo",
-    "business"
+    "photo"
   ],
   "icons": [
     {
