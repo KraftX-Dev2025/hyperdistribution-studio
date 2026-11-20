@@ -9,12 +9,17 @@
     "userInterfaceStyle": "automatic",
     "backgroundColor": "#F4F5FA",
     "extra": {
-      "webUrl": "https://hyperdistribution-studio.vercel.app"
+      "webUrl": "https://hyperdistribution-studio.vercel.app",
+      "eas": {
+        "projectId": "a4465f86-2a54-455c-b3ea-e1bcedb51bfd"
+      }
     },
     "ios": {
       "bundleIdentifier": "com.kraftxworks.hypermixer",
       "supportsTablet": true,
-      "config": { "usesNonExemptEncryption": false },
+      "config": {
+        "usesNonExemptEncryption": false
+      },
       "infoPlist": {
         "NSCameraUsageDescription": "HyperMixer uses the camera when you choose to shoot a photo or clip for a post.",
         "NSMicrophoneUsageDescription": "HyperMixer records sound when you shoot a clip for a post.",
@@ -29,7 +34,10 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png"
       },
-      "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"],
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
       "predictiveBackGestureEnabled": false
     },
     "plugins": [
@@ -40,9 +48,12 @@
           "imageWidth": 160,
           "resizeMode": "contain",
           "backgroundColor": "#F4F5FA",
-          "dark": { "backgroundColor": "#0E1017" }
+          "dark": {
+            "backgroundColor": "#0E1017"
+          }
         }
       ]
-    ]
+    ],
+    "owner": "kraftxworks"
   }
 }
