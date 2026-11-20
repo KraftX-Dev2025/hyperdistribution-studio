@@ -1,5 +1,5 @@
 {
-  "name": "hyperdistribution-studio",
+  "name": "hypermixer",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "typecheck": "tsc -b && tsc -p api/tsconfig.json",
     "studio": "remotion studio remotion/index.ts",
-    "render": "remotion render remotion/index.ts Edit"
+    "render": "remotion render remotion/index.ts Edit",
+    "app": "cd mobile && npm install && npx expo start"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.10.0",
@@ -34,7 +35,7 @@
     "vite": "^8.3.6"
   },
   "license": "MIT",
-  "description": "Free, open-source content studio: brand brains, multi-channel planning, scripts and Remotion video edits from your own media folder.",
+  "description": "HyperMixer: the content engine for businesses. Brand brains, multi-channel planning, scripts and video edits for every brand, on the web, iOS and Android.",
   "engines": {
     "node": ">=20"
   }

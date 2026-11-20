@@ -7,6 +7,7 @@ import { assets, registerWorker } from "./shim/assets";
 import { sample, mcp, openSettings } from "./shim/services";
 import { folder } from "./shim/folder";
 import { startRenderer } from "./shim/render";
+import { saveFile, setupNative } from "./shim/native";
 
 
 const services: Record<string, unknown> = { db, sample, assets, mcp };
@@ -38,25 +39,24 @@ window.addEventListener("hds:export", async () => {
   const out: Record<string, unknown[]> = {};
   for (const c of COLS) out[c] = await docsOf(c);
   out.media = (await docsOf("media")).filter((m) => (m as { source?: string }).source !== "folder");
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify({ app: "hyperdistribution-studio", version: 1, ...out }, null, 2)], { type: "application/json" }));
-  a.download = `hyperdistribution-backup-${new Date().toISOString().slice(0, 10)}.json`;
-  a.click();
+  const blob = new Blob([JSON.stringify({ app: "hypermixer", version: 1, ...out }, null, 2)], { type: "application/json" });
+  await saveFile(blob, `hypermixer-backup-${new Date().toISOString().slice(0, 10)}.json`);
 });
 window.addEventListener("hds:import", async (e) => {
   const toast = (window as unknown as { toast: (m: string) => void }).toast;
   try {
     const data = JSON.parse(await ((e as CustomEvent).detail as File).text());
-    if (data.app !== "hyperdistribution-studio") throw new Error();
+    if (data.app !== "hypermixer" && data.app !== "hyperdistribution-studio") throw new Error();
     let n = 0;
     for (const c of [...COLS, "media"]) for (const d of data[c] ?? []) { const { id, ...rest } = d; await db.collection(c).doc(id).set(rest); n++; }
     toast?.(`Imported ${n} items`);
   } catch {
-    toast?.("That file isn't a HyperDistribution backup");
+    toast?.("That file isn't a HyperMixer backup");
   }
 });
 
 (async () => {
+  setupNative();
   await registerWorker();
   const s = document.createElement("script");
   s.src = "/legacy/app.js";

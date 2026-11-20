@@ -1,5 +1,6 @@
 import { get, set, del } from "idb-keyval";
 import { setVirtual } from "./db";
+import { isMobile } from "./platform";
 
 /**
  * The connected media folder. Files are read in the browser and never uploaded;
@@ -105,11 +106,16 @@ export const folder = {
       return scan(dir);
     }
     const input = document.createElement("input");
-    input.type = "file"; input.multiple = true; input.setAttribute("webkitdirectory", "");
+    input.type = "file"; input.multiple = true;
+    // Phones can't pick a folder: let them pick clips, photos and music from the library instead.
+    if (isMobile) input.accept = "image/*,video/*,audio/*";
+    else input.setAttribute("webkitdirectory", "");
     input.onchange = () => {
       const files = [...(input.files ?? [])].filter((f) => kindOf(f.name)).slice(0, MAX);
       const rel = (f: File) => (f as File & { webkitRelativePath: string }).webkitRelativePath || f.name;
-      ingest(files.map((file) => ({ file, path: rel(file).split("/").slice(1).join("/") || file.name })), rel(files[0] ?? new File([], "Folder")).split("/")[0]);
+      if (!files.length) return;
+      if (isMobile) return ingest(files.map((file) => ({ file, path: file.name })), "Library picks");
+      ingest(files.map((file) => ({ file, path: rel(file).split("/").slice(1).join("/") || file.name })), rel(files[0]).split("/")[0]);
     };
     input.click();
   },
@@ -122,8 +128,10 @@ export const folder = {
   note() {
     const n = state.items.length;
     const btn = (label: string, act: string) => `<button class="btn sm" data-hdsfolder="${act}">${label}</button>`;
-    if (!state.name) return `Connect the folder where your photos, clips and music live. Files are read in your browser and never uploaded. ${btn("📁 Connect folder", "connect")}`;
+    if (!state.name) return isMobile
+      ? `Pick the photos, clips and music to work with. They're read on this device and never uploaded. ${btn("📷 Pick media", "connect")}`
+      : `Connect the folder where your photos, clips and music live. Files are read in your browser and never uploaded. ${btn("📁 Connect folder", "connect")}`;
     if (state.stored) return `Folder “${state.name}” needs permission again. ${btn("Reconnect", "connect")}`;
-    return `📁 ${state.name} · ${state.scanning ? "scanning…" : `${n} file${n === 1 ? "" : "s"}`} ${btn("Change folder", "connect")} ${btn("Disconnect", "disconnect")}`;
+    return `📁 ${state.name} · ${state.scanning ? "scanning…" : `${n} file${n === 1 ? "" : "s"}`} ${btn(isMobile ? "Pick again" : "Change folder", "connect")} ${btn(isMobile ? "Clear" : "Disconnect", "disconnect")}`;
   },
 };

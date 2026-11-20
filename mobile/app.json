@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "HyperMixer",
+    "slug": "hypermixer",
+    "scheme": "hypermixer",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#F4F5FA",
+    "extra": {
+      "webUrl": "https://hyperdistribution-studio.vercel.app",
+      "eas": {
+        "projectId": "a4465f86-2a54-455c-b3ea-e1bcedb51bfd"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.kraftxworks.hypermixer",
+      "supportsTablet": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "NSCameraUsageDescription": "HyperMixer uses the camera when you choose to shoot a photo or clip for a post.",
+        "NSMicrophoneUsageDescription": "HyperMixer records sound when you shoot a clip for a post.",
+        "NSPhotoLibraryUsageDescription": "HyperMixer reads the photos and clips you pick so you can edit them into posts. Nothing is uploaded.",
+        "NSPhotoLibraryAddUsageDescription": "HyperMixer saves the videos you export to your photo library."
+      }
+    },
+    "android": {
+      "package": "com.kraftxworks.hypermixer",
+      "adaptiveIcon": {
+        "backgroundColor": "#2A33C9",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "resizeMode": "contain",
+          "backgroundColor": "#F4F5FA",
+          "dark": {
+            "backgroundColor": "#0E1017"
+          }
+        }
+      ]
+    ],
+    "owner": "kraftxworks"
+  }
+}
