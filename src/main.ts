@@ -4,7 +4,7 @@
  */
 import { db, docsOf } from "./shim/db";
 import { assets, registerWorker } from "./shim/assets";
-import { sample, mcp, openSettings } from "./shim/services";
+import { sample, mcp, openSettings, conn } from "./shim/services";
 import { folder } from "./shim/folder";
 import { startRenderer } from "./shim/render";
 import { saveFile, setupNative } from "./shim/native";
@@ -19,7 +19,7 @@ const downloads = {
 };
 const services: Record<string, unknown> = { db, sample, assets, mcp, downloads };
 (window as unknown as { claude: unknown }).claude = { use: async (name: string) => services[name] ?? null };
-(window as unknown as { __hds: unknown }).__hds = { folderNote: () => folder.note(), settings: () => openSettings() };
+(window as unknown as { __hds: unknown }).__hds = { folderNote: () => folder.note(), settings: () => openSettings(), conn };
 
 // Folder buttons live inside the board's panels.
 document.addEventListener("click", async (e) => {

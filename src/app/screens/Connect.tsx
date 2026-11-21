@@ -3,12 +3,12 @@ import { folder } from "../../shim/folder";
 import { db, docsOf } from "../../shim/db";
 import { saveFile } from "../../shim/native";
 import { isMobile } from "../../shim/platform";
-import { settingsStore } from "../../shim/services";
+import { conn, settingsStore } from "../../shim/services";
 import { go, type ScreenProps } from "../App";
 import { errText, Icon, Sheet, toast } from "../ui";
 import { PLATFORMS } from "../platforms";
 
-const KEYS = { claude: "hds:anthropic-key", license: "hds:remotion-license" } as const;
+const KEYS = { claude: "hds:anthropic-key", license: "hds:remotion-license", heygen: "hm:heygen-key" } as const;
 const store = (k: string, v: string) => { try { if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch { /* private mode */ } };
 
 function useFolder() {
@@ -24,13 +24,23 @@ function useFolder() {
 const COLS = ["brands", "posts", "renders"];
 
 export default function Connect({ brands }: ScreenProps) {
-  const [sheet, setSheet] = useState<"" | "claude" | "license">("");
+  const [sheet, setSheet] = useState<"" | "claude" | "license" | "heygen">("");
   const [, refresh] = useState(0);
   const f = useFolder();
   const claude = !!settingsStore.apiKey();
   const license = settingsStore.license();
   const media = f.items.length;
+  const heygen = !!settingsStore.heygen();
+  const c = conn.get();
   const done = [claude, media > 0, !!license].filter(Boolean).length;
+  const toggleDrive = async () => {
+    if (!c.driveAvailable) return toast("Google Drive is coming soon");
+    try {
+      if (c.driveConnected) { await conn.disconnectDrive(); toast("Google Drive disconnected"); }
+      else { await conn.connectDrive(); toast("Google Drive connected"); }
+    } catch (e) { toast(errText(e)); }
+    refresh((n) => n + 1);
+  };
 
   const pickFolder = async () => {
     try { await folder.connect(); } catch (e) { if ((e as Error).name !== "AbortError") toast("Couldn't open that folder"); }
@@ -56,6 +66,10 @@ export default function Connect({ brands }: ScreenProps) {
     { key: "media", g: "Me", c: "#5C6176", label: isMobile ? "Photos and clips" : "Media folder", sub: media ? `${f.name || "Picked"} · ${media} files, read on this device` : "Clips, photos and music for edits. Never uploaded.", on: media > 0, act: pickFolder },
     { key: "license", g: "Rv", c: "#3846F0", label: "Video rendering", sub: license ? "Remotion renders edits on this device" : "Turn on to render videos on this device", on: !!license, act: () => setSheet("license") },
   ];
+  const extras = [
+    { key: "heygen", g: "Hg", c: "#7B3FE4", label: "HeyGen", sub: heygen ? "Avatar videos with your HeyGen key" : "Optional: avatar videos read to camera", on: heygen, act: () => setSheet("heygen") },
+    { key: "drive", g: "Dr", c: "#1A73E8", label: "Google Drive", sub: !c.driveAvailable ? "Coming soon" : c.driveConnected ? "Signed in. Drive sync runs from the classic board for now" : "Optional: sync with your Google Drive", on: c.driveConnected, act: toggleDrive },
+  ];
 
   return (
     <main className="screen">
@@ -80,6 +94,24 @@ export default function Connect({ brands }: ScreenProps) {
               {r.on
                 ? <button type="button" className="btn pill" onClick={r.act} aria-label={`Change ${r.label}`} style={{ color: "var(--ok)" }}><Icon name="check" size={16} stroke={2.6} />On</button>
                 : <button type="button" className="btn pill primary" onClick={r.act}>Connect</button>}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="stack" aria-labelledby="c-more">
+        <div className="eyebrow" id="c-more">Optional</div>
+        <div className="card list">
+          {extras.map((r) => (
+            <div className="item" key={r.key}>
+              <span className="mono" style={{ background: r.c, width: 36, height: 36, fontSize: 13, borderRadius: 10 }} aria-hidden="true">{r.g}</span>
+              <div className="grow stack" style={{ gap: 0 }}>
+                <strong>{r.label}</strong>
+                <span className="small muted">{r.sub}</span>
+              </div>
+              {r.on
+                ? <button type="button" className="btn pill" onClick={r.act} aria-label={`Change ${r.label}`} style={{ color: "var(--ok)" }}><Icon name="check" size={16} stroke={2.6} />On</button>
+                : <button type="button" className="btn pill" onClick={r.act} disabled={r.key === "drive" && !c.driveAvailable}>{r.key === "drive" && !c.driveAvailable ? "Soon" : "Connect"}</button>}
             </div>
           ))}
         </div>
@@ -123,6 +155,12 @@ export default function Connect({ brands }: ScreenProps) {
           onSave={(v) => { store(KEYS.claude, v); refresh((n) => n + 1); setSheet(""); toast(v ? "Claude connected" : "Claude disconnected"); }}
           onClose={() => setSheet("")} />
       )}
+      {sheet === "heygen" && (
+        <KeySheet title="HeyGen" label="HeyGen API key" placeholder="Paste your HeyGen API key" initial={settingsStore.heygen()}
+          hint={<>For avatar videos read to camera. Find it in HeyGen under Settings, API. It stays on this device, is sent only with each request, and uses your HeyGen credits.</>}
+          onSave={(v) => { store(KEYS.heygen, v); refresh((n) => n + 1); setSheet(""); toast(v ? "HeyGen connected" : "HeyGen disconnected"); }}
+          onClose={() => setSheet("")} />
+      )}
       {sheet === "license" && (
         <KeySheet title="Video rendering" label="Remotion license" placeholder="free-license" initial={license || "free-license"}
           hint={<>Videos render on this device with <a href="https://www.remotion.dev" target="_blank" rel="noopener">Remotion</a>. Free for individuals and companies of up to 3 people: keep <code>free-license</code>. Larger companies need a <a href="https://www.remotion.dev/license" target="_blank" rel="noopener">company license</a> key.</>}
@@ -141,7 +179,7 @@ function KeySheet(p: { title: string; label: string; placeholder: string; initia
       <form className="stack" style={{ gap: 14 }} onSubmit={(e) => { e.preventDefault(); try { p.onSave(v.trim()); } catch (x) { setErr(errText(x)); } }}>
         <div className="field">
           <label htmlFor="k">{p.label}</label>
-          <input id="k" type={p.title === "Claude" ? "password" : "text"} autoComplete="off" placeholder={p.placeholder} value={v} onChange={(e) => setV(e.target.value)} />
+          <input id="k" type={p.title === "Video rendering" ? "text" : "password"} autoComplete="off" placeholder={p.placeholder} value={v} onChange={(e) => setV(e.target.value)} />
           <span className="hint">{p.hint}</span>
         </div>
         {err && <span className="small" style={{ color: "var(--bad)" }}>{err}</span>}

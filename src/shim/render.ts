@@ -59,13 +59,13 @@ async function renderOne(id: string) {
   if (r.status !== "queued") return;
   const license = settingsStore.license();
   if (!license) {
-    await ref.update({ status: "failed", error: "Add your Remotion license (or free-license) in ⚙ Settings, then re-render.", updatedAt: Date.now() });
+    await ref.update({ status: "failed", error: "Set up the video engine in Connect, then try again.", updatedAt: Date.now() });
     return;
   }
   const media = (await docsOf("media")) as unknown as Media[];
   const { spec, srcs } = buildSpec(r, media);
   if (!spec.segments.some((s) => s.type === "clip")) {
-    await ref.update({ status: "failed", error: "No media to cut from. Connect your media folder in Media, then re-render.", updatedAt: Date.now() });
+    await ref.update({ status: "failed", error: "No photos or clips to cut from yet. Add your media in Connect, then try again.", updatedAt: Date.now() });
     return;
   }
   await ref.update({ status: "rendering", progress: 0, updatedAt: Date.now() });
