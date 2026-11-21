@@ -35,5 +35,9 @@ function devApi(): Plugin {
 
 export default defineConfig({
   plugins: [react(), devApi()],
-  build: { chunkSizeWarningLimit: 2000 },
+  build: {
+    chunkSizeWarningLimit: 2000,
+    // index.html is the six-module app; board.html keeps the classic board at /board.
+    rollupOptions: { input: { main: "index.html", board: "board.html" } },
+  },
 });
