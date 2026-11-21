@@ -93,6 +93,14 @@ async function heygen(tool: string, input: Record<string, unknown>) {
   return { payload: data };
 }
 
+/** What the Connect screen reads and writes. Keys stay on this device. */
+export const conn = {
+  get: () => ({ claude: get(KEY), license: get(LICENSE), heygen: get(HEYGEN), driveAvailable: driveAvailable(), driveConnected: driveConnected() }),
+  set(k: "claude" | "license" | "heygen", v: string) { put(k === "claude" ? KEY : k === "license" ? LICENSE : HEYGEN, v.trim()); },
+  connectDrive,
+  disconnectDrive,
+};
+
 type Win = Window & { openPanel?: (html: string, wide?: boolean) => void; closePanel?: () => void; toast?: (m: string) => void };
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
