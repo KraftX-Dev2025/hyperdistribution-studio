@@ -70,10 +70,6 @@ window.addEventListener("hds:import", async (e) => {
   s.onload = () => {
     startRenderer();
     folder.restore();
-    // The six-module app: the screens people see. The board script above is its engine.
-    const six = document.createElement("script");
-    six.src = "/legacy/six.js";
-    document.body.appendChild(six);
   };
   document.body.appendChild(s);
 })();

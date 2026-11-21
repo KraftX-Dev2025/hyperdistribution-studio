@@ -2,7 +2,7 @@
 // 1. Serves files the app stored in Cache Storage at /_blob/<id>, with range support for video.
 // 2. Keeps a copy of the app itself so the installed app opens offline (network first, cache as fallback).
 const CACHE = "hds-assets";
-const SHELL = "hypermixer-shell-v1";
+const SHELL = "hypermixer-shell-v2";
 self.addEventListener("install", (e) => {
   self.skipWaiting();
   e.waitUntil(caches.open(SHELL).then((c) => c.addAll(["/", "/manifest.webmanifest", "/favicon.svg", "/legacy/app.js"]).catch(() => {})));

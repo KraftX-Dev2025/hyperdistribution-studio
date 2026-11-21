@@ -42,7 +42,9 @@ On phones there's no folder picker, so **Media** asks you to pick photos, clips 
 
 ## How it's built
 
-The board itself is one page (`index.html` plus `public/legacy/app.js`), the same control desk as the original Distribution board: stats strip, fire grid, this week, pipeline and brands, with side panels for brands, posts, blasts, plans, media and the edit queue. It talks to a small set of services that `src/main.ts` provides:
+The app (`index.html`, `src/app/`) is six modules on one path: **Connect** (Claude, media, video rendering), **Brands** (one card per brand, with a brain built from its links), **Swipe** (approve or skip Claude's drafts), **Edit** (polish, cut the video from your clips, set a time), **Publish** (share the video and caption to each platform's app) and the **Dashboard** of every brand against its weekly target.
+
+The classic board is still at `/board` (`board.html` plus `public/legacy/app.js`), the same control desk as the original Distribution board: stats strip, fire grid, this week, pipeline and brands, with side panels for brands, posts, blasts, plans, media and the edit queue. It talks to a small set of services that `src/main.ts` provides:
 
 | Service | Where | What it does |
 | --- | --- | --- |
